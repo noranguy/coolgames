@@ -58,6 +58,16 @@ int main() {
                             } else if (!secondifPresent[i]) {
                                 secondifPresent[i] = true;
                             }
+                        }else if(smiskiTest.dressCollection[i].getGlobalBounds().contains(position.x,position.y)){
+                            if (thirdifPresent[i]) {
+                                nameOfCollection = "Dressing Collection";
+                                mainDisplay = smiskiTest.dressCollection[i];
+                                nameOfMain = smiskiTest.locateName[i+12];
+                                displayText = true;
+                                positionOfMain = i + 14;
+                            } else if (!thirdifPresent[i]) {
+                                thirdifPresent[i] = true;
+                            }
                         }else if(smiskiBack.removeCollectionButton.getGlobalBounds().contains(position.x, position.y)){
                             redButtonSprite = 1;
                         }
@@ -73,6 +83,8 @@ int main() {
                         firstifPresent[positionOfMain-1] = false;
                     } else if(positionOfMain>6 && positionOfMain<=12){
                         secondifPresent[positionOfMain-7] = false;
+                    } else if (positionOfMain>12&& positionOfMain<=18){
+                        thirdifPresent[positionOfMain-14] = false;
                     }
                 }
             }
@@ -87,11 +99,11 @@ int main() {
             window.draw(smiskiBack.smiskiBackgroundSprite);
             smiskiTest.drawTrueSmiski(window, firstifPresent, "At Work");
             smiskiTest.drawTrueSmiski(window, secondifPresent, "Cheer");
+            smiskiTest.drawTrueSmiski(window, thirdifPresent, "Dressing");
             smiskiTest.drawMainDisplay(window, mainDisplay);
             if(displayText){
                 smiskiBack.mainDisplayTextFunc(window, nameOfCollection, nameOfMain, to_string(positionOfMain));
                 smiskiBack.removeButtonDraw(window, redButtonSprite);
-//                window.draw(smiskiBack.removeCollectionButton);
             }
             window.display();
         }
