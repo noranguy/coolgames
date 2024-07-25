@@ -10,54 +10,65 @@ using namespace std;
 #define SFMLTRAINING_BACKGROUNDSMISKI_H
 class background{
 private:
-    float scale = .765;
-    sf::Vector2i imagePos = {1342,1004};
-    int textSize = 18;
-    int space = 25;
+    sf::Vector2f scale2window = {.765,.765};
+    sf::Vector2f imagePos = {1342,1004};
+    //text
+    float textSize = 18;
+    float space = 25;
     sf::Vector2f textPosition = {680,520};
-    int redButtonSize = 50;
-    sf::Vector2f buttonPosition = {800,632};
+    //red button (x & leave)
+    float redButtonSize = 50;
+    sf::Vector2f xbuttonPosition = {800,632};
+    sf::Vector2f leaveButtonPosition = {75, 675};
+    //start button
+    sf::Vector2f startButtonSize = {370,100};
+    sf::Vector2f startButtonPosition = {512, 400};
     //texture dont edit
     sf::Vector2i unClickedRedButton = {243,116};
-    sf::Vector2i clickedRedButton = {293,116};
+    sf::Vector2i unClickedLeaveButton = {2,2};
 public:
-    sf::Texture smiskiBackgroundTexture, removeCollectionTexture;
-    sf::Sprite smiskiBackgroundSprite, removeCollectionButton;
+    sf::Texture smiskiBackgroundTexture, removeCollectionTexture, startButtonTexture, leaveButtonTexture;
+    sf::Sprite smiskiBackgroundSprite, removeCollectionButton, startButton, leaveButton;
     sf::Font mainDisplayfont;
     sf::Text collection, title, positionText;
     vector<sf::Text> mainDisplayText = {collection, title, positionText};
     background(sf::Vector2f windowSize, sf::Vector2f scaleOfwindow){
-        float avgwindowScale = (scaleOfwindow.x+scaleOfwindow.y)/2;
-        textSize = textSize*avgwindowScale;
-        textPosition.x = textPosition.x*scaleOfwindow.x;
-        textPosition.y = textPosition.y*scaleOfwindow.y;
-        space = space* avgwindowScale;
-        buttonPosition.x = buttonPosition.x*scaleOfwindow.x;
-        buttonPosition.y = buttonPosition.y*scaleOfwindow.y;
-        makeBackground(windowSize);
-        makeRemove(scaleOfwindow);
+        //Loading from File
+        smiskiBackgroundTexture.loadFromFile("./smiskiTextures/smiskiBackground.jpg");
+        removeCollectionTexture.loadFromFile("./smiskiTextures/redButtonsprites.png");
+        startButtonTexture.loadFromFile("./smiskiTextures/startButton.png");
+        leaveButtonTexture.loadFromFile("./smiskiTextures/redButtonsprites.png");
+        //set scale
+        setScale(scaleOfwindow);
+        //initial background
+        makeSprite(smiskiBackgroundSprite, smiskiBackgroundTexture,windowSize,imagePos,scale2window);
+        //remove Button
+        makeSprite(removeCollectionButton, removeCollectionTexture, xbuttonPosition, sf::Vector2f {redButtonSize/2, redButtonSize/2}, scaleOfwindow);
+        removeCollectionButton.setTextureRect(sf::IntRect(unClickedRedButton.x, unClickedRedButton.y, redButtonSize, redButtonSize));
+        //start button
+        makeSprite(startButton, startButtonTexture, startButtonPosition, sf::Vector2f{startButtonSize.x/2, startButtonSize.y/2},scaleOfwindow);
+        //leave button
+        makeSprite(leaveButton, leaveButtonTexture, leaveButtonPosition, sf::Vector2f {redButtonSize/2, redButtonSize/2}, scaleOfwindow);
+        leaveButton.setTextureRect(sf::IntRect(unClickedLeaveButton.x, unClickedLeaveButton.y, redButtonSize, redButtonSize));
+        //make text
         makeText();
     };
-    void makeBackground(sf::Vector2f windowSize){
-        //smiski background
-        smiskiBackgroundTexture.loadFromFile("./smiskiTextures/smiskibackground.jpg");
-        smiskiBackgroundSprite.setTexture(smiskiBackgroundTexture);
-        smiskiBackgroundSprite.setPosition(windowSize.x/2,windowSize.y/2);
-        smiskiBackgroundSprite.setOrigin(imagePos.x/2,imagePos.y/2);
-        smiskiBackgroundSprite.scale(scale,scale);
+    void setScale(sf::Vector2f scaleWindow){
+        float avgwindowScale = (scaleWindow.x+scaleWindow.y)/2;
+        textSize = textSize*avgwindowScale;
+        textPosition.x = textPosition.x*scaleWindow.x;
+        textPosition.y = textPosition.y*scaleWindow.y;
+        space = space* avgwindowScale;
+        xbuttonPosition.x = xbuttonPosition.x*scaleWindow.x;
+        xbuttonPosition.y = xbuttonPosition.y*scaleWindow.y;
     }
-    void makeRemove(sf::Vector2f windowScale) {
-        //remove button
-        removeCollectionTexture.loadFromFile("./smiskiTextures/redButtonsprites.png");
-        removeCollectionButton.setTexture(removeCollectionTexture);
-        removeCollectionButton.setTextureRect(
-                sf::IntRect(unClickedRedButton.x, unClickedRedButton.y, redButtonSize, redButtonSize));
-        removeCollectionButton.setOrigin(redButtonSize / 2, redButtonSize / 2);
-        removeCollectionButton.scale(windowScale.x, windowScale.y);
-        removeCollectionButton.setPosition(buttonPosition.x, buttonPosition.y);
+    void makeSprite(sf::Sprite& sprite2Make, sf::Texture& texture2Use, sf::Vector2f position, sf::Vector2f origin,sf::Vector2f scale){
+        sprite2Make.setTexture(texture2Use);
+        sprite2Make.setPosition(position);
+        sprite2Make.setOrigin(origin);
+        sprite2Make.scale(scale);
     }
     void makeText(){
-        //font
         mainDisplayfont.loadFromFile("./fonts/arial.ttf");
         for(int i = 0; i<mainDisplayText.size();i++){
             mainDisplayText[i].setFont(mainDisplayfont);
@@ -78,13 +89,29 @@ public:
             window.draw(mainDisplayText[i]);
         }
     }
-    void removeButtonDraw(sf::RenderWindow& window, int redButton2Display){
+    void redButtonDraw(sf::RenderWindow& window, sf::Sprite& redButton, sf::Vector2i texturePosition, int redButton2Display){
         if(redButton2Display==0){
-            removeCollectionButton.setTextureRect(sf::IntRect(unClickedRedButton.x, unClickedRedButton.y, redButtonSize,redButtonSize));
+            redButton.setTextureRect(sf::IntRect(texturePosition.x, texturePosition.y, redButtonSize,redButtonSize));
         } else{
-            removeCollectionButton.setTextureRect(sf::IntRect(clickedRedButton.x, clickedRedButton.y, redButtonSize,redButtonSize));
+            redButton.setTextureRect(sf::IntRect(texturePosition.x+52, texturePosition.y, redButtonSize,redButtonSize));
         }
-        window.draw(removeCollectionButton);
+        window.draw(redButton);
+    }
+    void backgroundDraw(sf::RenderWindow& window, bool background2Display){
+        if(background2Display){
+            smiskiBackgroundTexture.loadFromFile("./smiskiTextures/smiskibackground.jpg");
+        } else {
+            smiskiBackgroundTexture.loadFromFile("./smiskiTextures/smiskiOpenScreen.png");
+        }
+        smiskiBackgroundSprite.setTexture(smiskiBackgroundTexture);
+        window.draw(smiskiBackgroundSprite);
+    }
+    sf::Vector2i getTexture(int typeOftexture){
+        if(typeOftexture == 0){
+            return unClickedRedButton;
+        } else if (typeOftexture == 1){
+            return unClickedLeaveButton;
+        }
     }
 };
 #endif //SFMLTRAINING_BACKGROUNDSMISKI_H

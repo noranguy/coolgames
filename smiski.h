@@ -9,12 +9,6 @@ using namespace std;
 
 #ifndef SFMLTRAINING_SMISKI_H
 #define SFMLTRAINING_SMISKI_H
-//struct smiskiProperties{
-//    sf::Sprite smiskiSpriteName;
-//    int positionOnShelf;
-//    string CollectionName;
-//    string title;
-//};
 class smiski{
 private:
     //dont edit size (texture)
@@ -22,16 +16,10 @@ private:
     float smallScale = .475;
     float mainScale = 1.25;
     sf::Vector2f mainDisplay = {800, 300};
-    sf::Vector2i firstShelfPos={110,115};
-    sf::Vector2i secondShelfPos={110,275};
-    sf::Vector2i thirdShelfPos = {110, 435};
+    sf::Vector2f firstShelfPos={110,115};
+    sf::Vector2f secondShelfPos={110,275};
+    sf::Vector2f thirdShelfPos = {110, 435};
     int spacing = 95;
-//    smiskiProperties work1SmiskiDet, work2SmiskiDet, work3SmiskiDet, work4SmiskiDet, work5SmiskiDet, work6SmiskiDet,
-//            cheer1SmiskiDet, cheer2SmiskiDet, cheer3SmiskiDet, cheer4SmiskiDet, cheer5SmiskiDet, cheer6SmiskiDet,
-//            dress1SmiskiDet, dress2SmiskiDet, dress3SmiskiDet, dress4SmiskiDet, dress5SmiskiDet, dress6SmiskiDet;
-//    vector<smiskiProperties> workDetStructVector= {work1SmiskiDet, work2SmiskiDet, work3SmiskiDet, work4SmiskiDet, work5SmiskiDet, work6SmiskiDet};
-//    vector<smiskiProperties> cheerDetStructVector= {cheer1SmiskiDet, cheer2SmiskiDet, cheer3SmiskiDet, cheer4SmiskiDet, cheer5SmiskiDet, cheer6SmiskiDet};
-//    vector<smiskiProperties> dressDetStructVector = {dress1SmiskiDet, dress2SmiskiDet, dress3SmiskiDet, dress4SmiskiDet, dress5SmiskiDet, dress6SmiskiDet};
 public:
     sf::Texture atWorktexture, cheerTexture, dressTexture;
     sf::Sprite work1Smiski, work2Smiski,work3Smiski, work4Smiski, work5Smiski, work6Smiski,
@@ -44,18 +32,7 @@ public:
                                    {6,"On Your Side"},{7,"Dancing"}, {8, "Cheerleading"},{9,"Marching"}, {10, "On Drums"},{11,"Cheering"},
                                     {12, "Underpants"}, {13,"Struggling"},{14, "Loose Pants"},{15,"Putting On Socks"},{16, "Sweater"},{17,"Tight Pants"}};
     smiski(sf::Vector2f scaleOfwindow) {
-        float avgwindowScale = (scaleOfwindow.x+scaleOfwindow.y)/2;
-        smallScale = smallScale*avgwindowScale;
-        mainScale = mainScale*avgwindowScale;
-        firstShelfPos.x = firstShelfPos.x *scaleOfwindow.x;
-        firstShelfPos.y = firstShelfPos.y *scaleOfwindow.y;
-        secondShelfPos.x = secondShelfPos.x *scaleOfwindow.x;
-        secondShelfPos.y = secondShelfPos.y *scaleOfwindow.y;
-        thirdShelfPos.x = thirdShelfPos.x *scaleOfwindow.x;
-        thirdShelfPos.y = thirdShelfPos.y *scaleOfwindow.y;
-        mainDisplay.x = mainDisplay.x *scaleOfwindow.x;
-        mainDisplay.y = mainDisplay.y *scaleOfwindow.y;
-        spacing = spacing*avgwindowScale;
+        setScale(scaleOfwindow);
         atWorktexture.loadFromFile("./smiskiTextures/atWorkSeriesedited.png");
         cheerTexture.loadFromFile("./smiskiTextures/cheerSmiskis.png");
         dressTexture.loadFromFile("./smiskiTextures/dressingSmiskisedited.png");
@@ -65,7 +42,21 @@ public:
         loadSmiski(atWorkCollection, firstShelfPos);
         loadSmiski(cheerCollection, secondShelfPos);
         loadSmiski(dressCollection, thirdShelfPos);
-}
+    }
+    void setScale(sf::Vector2f scaleWindow){
+        float avgwindowScale = (scaleWindow.x+scaleWindow.y)/2;
+        smallScale = smallScale*avgwindowScale;
+        mainScale = mainScale*avgwindowScale;
+        firstShelfPos.x = firstShelfPos.x *scaleWindow.x;
+        firstShelfPos.y = firstShelfPos.y *scaleWindow.y;
+        secondShelfPos.x = secondShelfPos.x *scaleWindow.x;
+        secondShelfPos.y = secondShelfPos.y *scaleWindow.y;
+        thirdShelfPos.x = thirdShelfPos.x *scaleWindow.x;
+        thirdShelfPos.y = thirdShelfPos.y *scaleWindow.y;
+        mainDisplay.x = mainDisplay.x *scaleWindow.x;
+        mainDisplay.y = mainDisplay.y *scaleWindow.y;
+        spacing = spacing*avgwindowScale;
+    }
     void loadTextures(vector<sf::Sprite>& collection, sf::Texture& texture){
         //top left, middle, right, bottom left, middle, right
         vector<vector<int>> coordOnTexture {{22,65}, {240, 65}, {458,65}, {22,342},{240,342},{458,342}};
@@ -74,7 +65,7 @@ public:
             collection[i].setTextureRect(sf::IntRect (coordOnTexture[i][0], coordOnTexture[i][1],size,size));
         }
     }
-    void loadSmiski(vector<sf::Sprite>& collection, sf::Vector2i& position){
+    void loadSmiski(vector<sf::Sprite>& collection, sf::Vector2f& position){
         for(int i = 0; i<collection.size(); i++){
             collection[i].scale(sf::Vector2f(smallScale,smallScale));
             collection[i].setOrigin(size/2,size/2);
@@ -99,15 +90,5 @@ public:
         mainDisplaySprite.setPosition(mainDisplay.x,mainDisplay.y);
         window.draw(mainDisplaySprite);
     }
-//    void details(vector<smiskiProperties>& structure2Edit, vector<sf::Sprite>& sprite2Add, string collectionName) {
-//        for (int i = 0; i < structure2Edit.size(); i++) {
-//            structure2Edit[i].smiskiSpriteName = sprite2Add[i];
-//            if (collectionName == "Work Series") {
-//                structure2Edit[i].CollectionName = collectionName;
-//                structure2Edit[i].title = locateName[i];
-//                structure2Edit[i].positionOnShelf = i;
-//            }
-//        }
-//    }
 };
 #endif //SFMLTRAINING_SMISKI_H
